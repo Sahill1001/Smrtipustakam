@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const fetchUser = require("../middleware/fetchUser");
 
 //Secrete key for JWT
-const JWT_SEC = "Sahil@7718";
+const JWT_SEC = "../process.env.JWT_SEC";
 
 //Route 1 : Create a User with end-point using POST: /api/v1/auth/createUser .no loggin require
 router.post(
@@ -23,7 +23,7 @@ router.post(
     //Check and valid request data or req
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return  res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     try {
@@ -54,7 +54,10 @@ router.post(
       //Generate authtiken or JWT tocken
       const authtoken = jwt.sign(data, JWT_SEC);
       //Send Response to user success message and authtoken
-      return res.json({ success: "User has been created successfully", authtoken });
+      return res.json({
+        success: "User has been created successfully",
+        authtoken,
+      });
     } catch (error) {
       console.error("ERROR " + error.message);
       return res.status(500).send("Internal Server error");

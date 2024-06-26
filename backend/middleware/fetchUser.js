@@ -1,20 +1,23 @@
 const jwt = require("jsonwebtoken");
-//Secrete key for JWT
-const JWT_SEC = "Sahil@7718";
+require('dotenv').config();
+
+// Use an environment variable for the JWT secret key
+const JWT_SEC = '../process.env.JWT_SEC';
+
 const fetchUser = (req, res, next) => {
-  //Get the user from the JWT token and add id to req object.
+  // Get the token from the header
   const token = req.header("auth-token");
   if (!token) {
-    return res.status(401).send({ error: "Please authenticate using a valid token" });
+    return res.status(401).send({ error: "Authentication token is missing" });
   }
   try {
     const data = jwt.verify(token, JWT_SEC);
-    // console.log(data);
     req.user = data.user;
     next();
   } catch (error) {
     console.error(error.message);
-    return res.status(401).send({ error: "Please authenticate using a valid token" });
+    return res.status(401).send({ error: "Invalid authentication token" });
   }
 };
+
 module.exports = fetchUser;

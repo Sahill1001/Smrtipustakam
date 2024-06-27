@@ -1,11 +1,13 @@
-import React from 'react'
+import AddNote from "./AddNote";
+import Note from "./Note";
 
 function Home() {
   return (
-    <div>
-      This is Home page
+    <div className="container my-4">
+      <AddNote />
+      <Note />
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

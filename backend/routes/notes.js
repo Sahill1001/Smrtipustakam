@@ -55,12 +55,12 @@ router.post(
 
     try {
       //Destructuring title,description and tag from req.body;
-      const { title, description, tag } = req.body;
+      const { title, description, tags } = req.body;
       //add data in Schema
       const note = new Note({
         title,
         description,
-        tag,
+        tags,
         user: req.user.id,
       });
       //save the note into database

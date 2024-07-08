@@ -5,18 +5,25 @@ function AddNote() {
   const [note, setNote] = useState({
     title: "",
     description: "",
-    tag: "default",
+    tag: "",
   });
 
   const context = useContext(noteContext);
   const { addNote } = context;
-  //Handle Onchange
+
+  // Handle OnChange
   const onChangeInputs = (e) => {
-    setNote({ ...note, [e.target.name]: [e.target.value] });
+    setNote({ ...note, [e.target.name]: e.target.value });
   };
-  //Handle submit
+
+  // Handle submit
   const handleSubmit = () => {
     addNote(note);
+    setNote({
+      title: "",
+      description: "",
+      tag: "",
+    });
   };
 
   return (
@@ -28,6 +35,7 @@ function AddNote() {
         </label>
         <input
           type="text"
+          value={note.title}
           className="form-control title"
           id="title"
           name="title"
@@ -40,6 +48,7 @@ function AddNote() {
         </label>
         <textarea
           className="form-control description"
+          value={note.description}
           id="description"
           name="description"
           onChange={onChangeInputs}
@@ -52,6 +61,7 @@ function AddNote() {
         </label>
         <input
           type="text"
+          value={note.tag}
           className="form-control tag"
           id="tag"
           name="tag"
@@ -59,7 +69,12 @@ function AddNote() {
         />
       </div>
       <div className="d-flex justify-content-end">
-        <button type="button" className="btn btn-dark" onClick={handleSubmit} >
+        <button
+          disabled={note.title.length < 3 || note.description.length < 5}
+          type="button"
+          className="btn btn-dark"
+          onClick={handleSubmit}
+        >
           Add Note
         </button>
       </div>

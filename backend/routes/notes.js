@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 //Route 1 : Get All notes with end-point using GET: /api/v1/notes/fetchAllNotes . loggin require
 router.get("/fetchAllNotes", fetchUser, async (req, res) => {
   try {
-    const notes = await Note.find({ user: req.user.id });
+    const notes = await Note.find({ user: req.user.id }).sort({ _id: -1 });
     return res.json(notes);
   } catch (error) {
     console.error("Error" + error.message);
@@ -78,7 +78,7 @@ router.post(
 router.put("/updateNote/:id", fetchUser, async (req, res) => {
   try {
     //Destructuring title,description and tag from req.body;
-    const { title, description, tag } = req.body;
+    const { title, description, tags } = req.body;
     const newNote = {};
     if (title) {
       newNote.title = title;
@@ -86,8 +86,8 @@ router.put("/updateNote/:id", fetchUser, async (req, res) => {
     if (description) {
       newNote.description = description;
     }
-    if (tag) {
-      newNote.tag = tag;
+    if (tags) {
+      newNote.tags = tags;
     }
 
     const note = await Note.findById(req.params.id);

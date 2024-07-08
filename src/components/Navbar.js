@@ -1,10 +1,18 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
   let location = useLocation();
+  const authToken = localStorage.getItem("auth-token");
+
+  const logOut = () => {
+    localStorage.removeItem("auth-token");
+    navigate("/signIn");
+  };
   return (
-    <nav className="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+    <nav className="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
       <div className="container-fluid">
         <Link
           className={`navbar-brand ${
@@ -49,17 +57,28 @@ function Navbar() {
               </Link>
             </li>
           </ul>
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
+          <div className="d-flex">
+            {authToken ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-light mx-1"
+                  onClick={logOut}
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link type="button" className="btn btn-light mx-1" to="/signIn">
+                  Sign In
+                </Link>
+                <Link type="button" className="btn btn-light mx-1" to="/signUp">
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>

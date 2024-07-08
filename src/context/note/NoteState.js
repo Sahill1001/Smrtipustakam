@@ -1,17 +1,23 @@
 import { useState } from "react";
 import NoteContext from "./noteContext";
+import { useNavigate } from "react-router-dom";
+
 const NoteState = (props) => {
+  const navigate = useNavigate();
+
   const initialNotes = [];
-
   let url = "http://localhost:5000/api/v1/";
-
   //fetch all notes
   const fetchAllNotes = async () => {
+    // Check if 'auth-token' is not in local storage
+    if (!localStorage.getItem("auth-token")) {
+      // Navigate to the sign-in page
+      navigate("/signIn");
+    }
     const response = await fetch(`${url}notes/fetchAllNotes`, {
       method: "GET",
       headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3ODQ5YWNkMDYyZmY3MzVlZDFhNjc4In0sImlhdCI6MTcxOTQxNjEyMH0.imLWNdkcao8Xpsdl2Otn-4vY8rOnoDrgZNVq3ANx_AM",
+        "auth-token": localStorage.getItem("auth-token"),
       },
     });
     const json = await response.json();
@@ -22,12 +28,16 @@ const NoteState = (props) => {
 
   //Add note
   const addNote = async ({ title, description, tag }) => {
+    // Check if 'auth-token' is not in local storage
+    if (!localStorage.getItem("auth-token")) {
+      // Navigate to the sign-in page
+      navigate("/signIn");
+    }
     const response = await fetch(`${url}notes/addNote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3ODQ5YWNkMDYyZmY3MzVlZDFhNjc4In0sImlhdCI6MTcxOTQxNjEyMH0.imLWNdkcao8Xpsdl2Otn-4vY8rOnoDrgZNVq3ANx_AM",
+        "auth-token": localStorage.getItem("auth-token"),
       },
       body: JSON.stringify({
         title: String(title),
@@ -64,12 +74,16 @@ const NoteState = (props) => {
 
   //Delete note
   const deleteNote = async (id) => {
+    // Check if 'auth-token' is not in local storage
+    if (!localStorage.getItem("auth-token")) {
+      // Navigate to the sign-in page
+      navigate("/signIn");
+    }
     const response = await fetch(`${url}notes/deleteNote/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3ODQ5YWNkMDYyZmY3MzVlZDFhNjc4In0sImlhdCI6MTcxOTQxNjEyMH0.imLWNdkcao8Xpsdl2Otn-4vY8rOnoDrgZNVq3ANx_AM",
+        "auth-token": localStorage.getItem("auth-token"),
       },
     });
 
@@ -87,18 +101,48 @@ const NoteState = (props) => {
 
   //Update note
 
-  const updateNote = async (id) => {
-    const response = await fetch(`${url}notes/deleteNote/${id}`, {
-      method: "UPDATE",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3ODQ5YWNkMDYyZmY3MzVlZDFhNjc4In0sImlhdCI6MTcxOTQxNjEyMH0.imLWNdkcao8Xpsdl2Otn-4vY8rOnoDrgZNVq3ANx_AM",
-      },
-    });
+  const updateNote = async ({ id, title, description, tag }) => {
+    // Check if 'auth-token' is not in local storage
+    if (!localStorage.getItem("auth-token")) {
+      // Navigate to the sign-in page
+      navigate("/signIn");
+    }
+    try {
+      const response = await fetch(`${url}notes/updateNote/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+        body: JSON.stringify({
+          title: String(title),
+          description: String(description),
+          tags: String(tag),
+        }),
+      });
 
-    const json = await response.json();
-    console.log(json);
+      if (response.status === 200) {
+        const json = await response.json();
+        // console.log(json);
+        // Find the index of the note with the matching _id
+        const index = notes.findIndex((note) => note._id === json._id);
+        // Check if the note exists
+        if (index !== -1) {
+          // Update the note value immutably
+          setNotes((prevNotes) =>
+            prevNotes.map((note, i) =>
+              i === index
+                ? { ...note, title: title, description: description, tags: tag }
+                : note
+            )
+          );
+        }
+      } else {
+        console.log("Some error occurred !");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

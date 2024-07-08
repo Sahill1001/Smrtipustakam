@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import noteContext from "../context/note/noteContext";
 
-function AddNote() {
+function AddNote(props) {
   const [note, setNote] = useState({
     title: "",
     description: "",
@@ -19,6 +19,7 @@ function AddNote() {
   // Handle submit
   const handleSubmit = () => {
     addNote(note);
+    props.showAlert("Note added successfully","success");
     setNote({
       title: "",
       description: "",

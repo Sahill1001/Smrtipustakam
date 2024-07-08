@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import noteContext from "../context/note/noteContext";
 import NoteItem from "./NoteItem";
-function Note() {
+function Note(props) {
   const context = useContext(noteContext);
   const { notes, fetchAllNotes, updateNote } = context;
 
@@ -32,6 +32,7 @@ function Note() {
   //Handle submit
   const saveChanges = () => {
     updateNote(note);
+    props.showAlert("Note Updated successfully","success")
     closeRef.current.click();
   };
 
@@ -136,7 +137,7 @@ function Note() {
           {notes.length === 0 && "No notes to display"}
         </div>
         {notes.map((note) => {
-          return <NoteItem key={note._id} editNote={editNote} note={note} />;
+          return <NoteItem key={note._id} editNote={editNote} note={note} showAlert={props.showAlert} />;
         })}
       </div>
     </>

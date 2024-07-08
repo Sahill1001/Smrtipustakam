@@ -16,10 +16,14 @@ function AuthState(props) {
         password: String(password),
       }),
     });
-    const json = await response.json();
-    localStorage.setItem("auth-token", json.authtoken);
-    console.log(json.authtoken);
-    navigate("/");
+    if (response.status === 200) {
+      const json = await response.json();
+      localStorage.setItem("auth-token", json.authtoken);
+      console.log(json.authtoken);
+      navigate("/");
+    } else {
+      console.log("Invalid credentials");
+    }
   };
 
   const singnUp = async ({ name, email, password }) => {
@@ -34,10 +38,12 @@ function AuthState(props) {
         password: String(password),
       }),
     });
-    const json = await response.json();
-    localStorage.setItem("auth-token", json.authtoken);
-    console.log(json.authtoken);
-    navigate("/");
+    if (response.status === 200) {
+      const json = await response.json();
+      localStorage.setItem("auth-token", json.authtoken);
+      console.log(json.authtoken);
+      navigate("/");
+    }
   };
 
   return (

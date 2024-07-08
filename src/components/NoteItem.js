@@ -15,6 +15,7 @@ function NoteItem(props) {
                 className="fa-solid fa-trash mx-2"
                 onClick={() => {
                   context.deleteNote(props.note._id);
+                  props.showAlert("Note deleted successfully", "success")
                 }}
               ></i>
               <i className="fa-regular fa-pen-to-square mx-2" onClick={()=>{props.editNote(props.note)}}></i>
